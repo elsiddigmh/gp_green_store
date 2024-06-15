@@ -18,17 +18,17 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td class='name'>Add Category Cache</td>
-							<td class='subject'>This Command looping in all categories row and add it in caching</td>
+							<td class='name'>Add Product Cache</td>
+							<td class='subject'>This Command looping in all product records and adding it in caching</td>
 							<td class="text-center">
-								<a href="#" class="btn btn-primary btn-sm">{{ _lang('Add') }}</a>
+								<a href="{{route('cache.products.add')}}" class="btn btn-primary btn-sm">{{ _lang('Add') }}</a>
 							</td>
 						</tr>
 						<tr>
-							<td class='name'>Empty Category Cache</td>
-							<td class='subject'>This Command looping in all categories row in redis and deleted it</td>
+							<td class='name'>Empty Product Cache</td>
+							<td class='subject'>This Command looping in all product records in redis and deleted it</td>
 							<td class="text-center">
-								<a href="#" class="btn btn-danger btn-sm">{{ _lang('Delete') }}</a>
+								<a href="{{route('cache.products.add')}}" class="btn btn-danger btn-sm">{{ _lang('Delete') }}</a>
 							</td>
 						</tr>
 					</tbody>
