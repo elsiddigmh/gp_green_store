@@ -36,6 +36,7 @@ return array(
     'App\\Http\\Controllers\\Install\\InstallController' => $baseDir . '/app/Http/Controllers/Install/InstallController.php',
     'App\\Http\\Controllers\\Install\\UpdateController' => $baseDir . '/app/Http/Controllers/Install/UpdateController.php',
     'App\\Http\\Controllers\\LanguageController' => $baseDir . '/app/Http/Controllers/LanguageController.php',
+    'App\\Http\\Controllers\\ManageCacheController' => $baseDir . '/app/Http/Controllers/ManageCacheController.php',
     'App\\Http\\Controllers\\OfferController' => $baseDir . '/app/Http/Controllers/OfferController.php',
     'App\\Http\\Controllers\\OrderController' => $baseDir . '/app/Http/Controllers/OrderController.php',
     'App\\Http\\Controllers\\PageController' => $baseDir . '/app/Http/Controllers/PageController.php',

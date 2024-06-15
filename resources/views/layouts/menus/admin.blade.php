@@ -120,5 +120,6 @@
 		<a class="nav-link" href="{{ route('settings.update_settings') }}">{{ _lang('General Settings') }}</a>
 		<a class="nav-link" href="{{ route('email_templates.index') }}">{{ _lang('Email Template') }}</a>
 		<a class="nav-link" href="{{ route('database_backups.list') }}">{{ _lang('Database Backup') }}</a>
+		<a class="nav-link" href="{{ route('cache.index') }}">{{ _lang('Manage Cache') }}</a>
 	</nav>
 </div>

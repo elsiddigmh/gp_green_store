@@ -66,6 +66,11 @@ Route::group(['middleware' => ['install']], function () {
                 'index', 'show', 'edit', 'update',
             ]);
 
+            // Manage Cache
+            Route::get('cache/manage', 'ManageCacheController@index')->name('cache.index');
+            Route::get('cache/category/add', 'ManageCacheController@addCategoryCache')->name('cache.category.add');
+            Route::get('cache/category/delete', 'ManageCacheController@deleteCategoryCache')->name('cache.category.delete');
+
         });
 
         /** Dynamic Permission **/

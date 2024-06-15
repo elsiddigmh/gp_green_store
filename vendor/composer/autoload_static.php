@@ -693,6 +693,7 @@ class ComposerStaticInitb536befd1bd789afb873a293eeb22755
         'App\\Http\\Controllers\\Install\\InstallController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/InstallController.php',
         'App\\Http\\Controllers\\Install\\UpdateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Install/UpdateController.php',
         'App\\Http\\Controllers\\LanguageController' => __DIR__ . '/../..' . '/app/Http/Controllers/LanguageController.php',
+        'App\\Http\\Controllers\\ManageCacheController' => __DIR__ . '/../..' . '/app/Http/Controllers/ManageCacheController.php',
         'App\\Http\\Controllers\\OfferController' => __DIR__ . '/../..' . '/app/Http/Controllers/OfferController.php',
         'App\\Http\\Controllers\\OrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/OrderController.php',
         'App\\Http\\Controllers\\PageController' => __DIR__ . '/../..' . '/app/Http/Controllers/PageController.php',
