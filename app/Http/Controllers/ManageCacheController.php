@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 class ManageCacheController extends Controller
@@ -13,11 +14,11 @@ class ManageCacheController extends Controller
     }
     // Add All Products Records to Redis Cache
     public function addProductCache(){
-        $products = Product::select('id','slug')->get();
+        $products = Product::all();
 
         if(isset($products) && !empty($products)){
             foreach($products as $product){
-                Redis::set('product_info_'.$product->slug, $product->id);
+                Cache::put('product_id_'.$product->id, $product->toJson());
             }
             return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
         }else{
@@ -26,7 +27,19 @@ class ManageCacheController extends Controller
     }
     
     // Delete All Products Records Cached in Redis
-    public function deleteProductCache(Request $request){
-        //Redis::del(Redis::keys('products:*'));
+    public function clearProductCache(Request $request){
+        $products = Product::all();
+        foreach($products as $product){
+            if(Cache::get('product_id_'.$product->id) != null){
+                Cache::forget('product_id_'.$product->id);
+            }
+        }
+        return redirect()->route('cache.index')->with('success', _lang('Products Caching has been Cleard!'));
+    }
+
+    // Clear All Records Cached in Redis
+    public function clearCache(Request $request){
+        Cache::flush();
+        return redirect()->route('cache.index')->with('success', _lang('Application Caching has been Cleard!'));
     }
 }

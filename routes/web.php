@@ -69,7 +69,8 @@ Route::group(['middleware' => ['install']], function () {
             // Manage Cache
             Route::get('cache/manage', 'ManageCacheController@index')->name('cache.index');
             Route::get('cache/product/add', 'ManageCacheController@addProductCache')->name('cache.products.add');
-            Route::get('cache/product/delete', 'ManageCacheController@deleteProductCache')->name('cache.products.delete');
+            Route::get('cache/product/clear', 'ManageCacheController@clearProductCache')->name('cache.products.clear');
+            Route::get('cache/clear', 'ManageCacheController@clearCache')->name('cache.clear');
 
         });
 

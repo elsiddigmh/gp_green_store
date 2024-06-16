@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use DataTables;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 use Image;
 use Validator;
 
@@ -144,8 +143,6 @@ class ProductController extends Controller {
         $product->thumbnail     = $thumbnail;
 
         $product->save();
-
-        //Redis::set("product_".$product->id, $product);
 
         if (!$request->ajax()) {
             return redirect()->route('products.create')->with('success', _lang('Saved Successfully'));
