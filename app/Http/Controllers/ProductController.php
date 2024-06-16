@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Image;
 use Validator;
 
@@ -144,6 +145,8 @@ class ProductController extends Controller {
 
         $product->save();
 
+        Cache::put('product_id_'.$product->id, $product->toJson());
+
         if (!$request->ajax()) {
             return redirect()->route('products.create')->with('success', _lang('Saved Successfully'));
         } else {
@@ -240,6 +243,8 @@ class ProductController extends Controller {
         }
 
         $product->save();
+
+        Cache::put('product_id_'.$product->id, $product->toJson());
 
         if (!$request->ajax()) {
             return redirect()->route('products.index')->with('success', _lang('Updated Successfully'));

@@ -42,4 +42,6 @@ class ManageCacheController extends Controller
         Cache::flush();
         return redirect()->route('cache.index')->with('success', _lang('Application Caching has been Cleard!'));
     }
+
+    
 }
