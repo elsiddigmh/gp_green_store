@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+
 Route::group(['middleware' => ['install']], function () {
 
     Route::group(['prefix' => 'admin'], function () {
@@ -159,3 +160,5 @@ Route::post('install/finish', 'Install\InstallController@final_touch');
 
 //Update System
 Route::get('migration/update', 'Install\UpdateController@update_migration');
+
+

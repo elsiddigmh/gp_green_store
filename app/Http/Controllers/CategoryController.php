@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Image;
 use Validator;
 
@@ -95,6 +96,9 @@ class CategoryController extends Controller {
         $category->is_active = $request->input('is_active');
 
         $category->save();
+
+        Cache::put('category_id_'.$category->id, $category->toJson());
+
 
         if (!$request->ajax()) {
             return redirect()->route('categories.create')->with('success', _lang('Saved Successfully'));
@@ -190,6 +194,7 @@ class CategoryController extends Controller {
         $category->is_active = $request->input('is_active');
 
         $category->save();
+        Cache::put('category_id_'.$category->id, $category->toJson());
 
         if (!$request->ajax()) {
             return redirect()->route('categories.index')->with('success', _lang('Updated Successfully'));
