@@ -16,15 +16,21 @@ class ManageCacheController extends Controller
     // Add All Products Records to Redis Cache
     public function addProductCache(){
         $products = Product::all();
+        Cache::put('products', $products->toJson());
+        return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
 
-        if(isset($products) && !empty($products)){
-            foreach($products as $product){
-                Cache::put('product_id_'.$product->id, $product->toJson());
-            }
-            return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
-        }else{
-            return redirect()->route('cache.index')->with('error', _lang('Something went wrong'));
-        }
+        // $cached_products = [];
+        // if(isset($products) && !empty($products)){
+        //     foreach($products as $product){
+        //         $row = Cache::put('product_id_'.$product->id, $product->toJson());
+        //         array_push($cached_products, $row);
+        //     }
+
+        //     dd($cached_products);
+        //     return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
+        // }else{
+        //     return redirect()->route('cache.index')->with('error', _lang('Something went wrong'));
+        // }
     }
     
     // Delete All Products Records Cached in Redis
@@ -42,7 +48,7 @@ class ManageCacheController extends Controller
     // Add All Categories Records to Redis Cache
     public function addCategoryCache(){
         $categories = Category::all();
-
+        Cache::put('categories', $categories->toJson());
         //dd($categories);
     
         if(isset($categories) && !empty($categories)){

@@ -21,7 +21,7 @@
 							<td class='name'>Add Product Cache</td>
 							<td class='subject'>This Command looping in all product records and adding it in caching</td>
 							<td class="text-center">
-								<a href="{{route('cache.products.add')}}" class="btn btn-primary btn-sm">{{ _lang('Caching Products') }}</a>
+								<a href="{{route('cache.products.add')}}" class="btn btn-primary btn-sm">{{ _lang('Cache Products') }}</a>
 							</td>
 						</tr>
 						<tr>
@@ -35,7 +35,7 @@
 							<td class='name'>Add Category Cache</td>
 							<td class='subject'>This Command looping in all category records and adding it in caching</td>
 							<td class="text-center">
-								<a href="{{route('cache.categories.add')}}" class="btn btn-primary btn-sm">{{ _lang('Caching Category') }}</a>
+								<a href="{{route('cache.categories.add')}}" class="btn btn-primary btn-sm">{{ _lang('Cache Category') }}</a>
 							</td>
 						</tr>
 						<tr>
@@ -56,7 +56,7 @@
 							<td class='name'>Clear Cache</td>
 							<td class='subject'>This Command Clear All Application Cache</td>
 							<td class="text-center">
-								<a href="{{route('cache.clear')}}" class="btn btn-danger btn-sm">{{ _lang('Clear Application Cache') }}</a>
+								<a href="{{route('cache.clear')}}" class="btn btn-danger btn-sm">{{ _lang('Clear All') }}</a>
 							</td>
 						</tr>
 					</tbody>
