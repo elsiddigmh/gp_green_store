@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller {
 
@@ -26,6 +27,7 @@ class CategoryController extends Controller {
 
     public function products($slug) {
 
+        //From DB
         $products = Product::where('is_active', 1)
             ->where('product_type','general')
             ->whereHas('category', function (Builder $query) use ($slug) {
@@ -33,8 +35,8 @@ class CategoryController extends Controller {
             })
             ->orderBy('slug')
             ->paginate(15);
-
-        return ProductResource::collection($products);
+        
+        
     }
 
 }

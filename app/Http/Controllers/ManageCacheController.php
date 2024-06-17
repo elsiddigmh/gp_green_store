@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -37,11 +38,40 @@ class ManageCacheController extends Controller
         return redirect()->route('cache.index')->with('success', _lang('Products Caching has been Cleard!'));
     }
 
+
+    // Add All Categories Records to Redis Cache
+    public function addCategoryCache(){
+        $categories = Category::all();
+
+        //dd($categories);
+    
+        if(isset($categories) && !empty($categories)){
+            foreach($categories as $category){
+                Cache::put('category_id_'.$category->id, $category->toJson());
+            }
+            return redirect()->route('cache.index')->with('success', _lang('All Categories Records Cached Successfully'));
+        }else{
+            return redirect()->route('cache.index')->with('error', _lang('Something went wrong'));
+        }
+    }
+
+
+    // Delete All Categories Records Cached in Redis
+    public function clearCategoryCache(Request $request){
+        $categories = Category::all();
+        foreach($categories as $category){
+            if(Cache::get('category_id_'.$category->id) != null){
+                Cache::forget('category_id_'.$category->id);
+            }
+        }
+        return redirect()->route('cache.index')->with('success', _lang('Categories Caching has been Cleard!'));
+    }
+
     // Clear All Records Cached in Redis
     public function clearCache(Request $request){
         Cache::flush();
         return redirect()->route('cache.index')->with('success', _lang('Application Caching has been Cleard!'));
     }
 
-    
+
 }
