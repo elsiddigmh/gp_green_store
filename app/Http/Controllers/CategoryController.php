@@ -97,8 +97,7 @@ class CategoryController extends Controller {
 
         $category->save();
 
-        Cache::put('category_id_'.$category->id, $category->toJson());
-
+        Cache::put('category_'.$category->slug, $category->toJson());
 
         if (!$request->ajax()) {
             return redirect()->route('categories.create')->with('success', _lang('Saved Successfully'));
@@ -194,7 +193,7 @@ class CategoryController extends Controller {
         $category->is_active = $request->input('is_active');
 
         $category->save();
-        Cache::put('category_id_'.$category->id, $category->toJson());
+        Cache::put('category_'.$category->slug, $category->toJson());
 
         if (!$request->ajax()) {
             return redirect()->route('categories.index')->with('success', _lang('Updated Successfully'));

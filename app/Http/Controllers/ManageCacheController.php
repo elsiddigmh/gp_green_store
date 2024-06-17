@@ -47,7 +47,7 @@ class ManageCacheController extends Controller
     
         if(isset($categories) && !empty($categories)){
             foreach($categories as $category){
-                Cache::put('category_id_'.$category->id, $category->toJson());
+                Cache::put('category_'.$category->slug, $category->toJson());
             }
             return redirect()->route('cache.index')->with('success', _lang('All Categories Records Cached Successfully'));
         }else{
@@ -60,8 +60,8 @@ class ManageCacheController extends Controller
     public function clearCategoryCache(Request $request){
         $categories = Category::all();
         foreach($categories as $category){
-            if(Cache::get('category_id_'.$category->id) != null){
-                Cache::forget('category_id_'.$category->id);
+            if(Cache::get('category_'.$category->slug) != null){
+                Cache::forget('category_'.$category->slug);
             }
         }
         return redirect()->route('cache.index')->with('success', _lang('Categories Caching has been Cleard!'));
