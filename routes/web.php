@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
  */
+
+Route::get("/fill-unit", 'seedController@seedUnit');
+Route::get("/fill-category/{num}", 'seedController@seedCategory');
+Route::get("/fill-product/{num}", 'seedController@seedProduct');
 
 
 Route::group(['middleware' => ['install']], function () {
