@@ -9,43 +9,45 @@ use Illuminate\Support\Facades\DB;
 class SeedController extends Controller
 {
 
-    public function seedUnit(){
-        
-        for($i = 1; $i <= 5; $i++){
+    public function seedUnit()
+    {
+
+        for ($i = 1; $i <= 5; $i++) {
             DB::table("units")->insert(["id" => $i]);
         }
 
-        for($i = 1; $i <= 5; $i++){
+        for ($i = 1; $i <= 5; $i++) {
             DB::table("unit_translations")->insert([
-                'name'=> fake()->word(),
-                'short_name'=> 'PG',
-                'unit_id'=> $i,
+                'name' => fake()->word(),
+                'short_name' => 'PG',
+                'unit_id' => $i,
             ]);
         }
 
         return redirect('/')->with('success', _lang('Units Added Successfully'));
 
     }
-    
-    public function seedCategory($num){
+
+    public function seedCategory($num)
+    {
         for ($i = 1; $i <= $num; $i++) {
 
             DB::table("categories")->insert([
-                "slug"=> fake()->slug,
+                "slug" => fake()->slug,
                 'icon' => '<i class="icofont-category"></i>',
                 'banner' => null,
                 'image' => asset('/uploads/default/default_category.png'),
                 'parent_id' => null,
                 'is_active' => 1,
             ]);
-    
+
         }
-    
+
         for ($i = 1; $i <= $num; $i++) {
             DB::table("category_translations")->insert([
-                "category_id"=> $i,
-                "name"=> fake()->word(),
-                "description"=> fake()->sentence(),
+                "category_id" => $i,
+                "name" => fake()->word(),
+                "description" => fake()->sentence(),
             ]);
         }
 
@@ -54,25 +56,29 @@ class SeedController extends Controller
     }
 
 
-    public function seedProduct($num){
+    public function seedProduct($num)
+    {
+        $last = DB::table('products') ->latest() ->first();
+        $lastId = 1;
+        if ($last) {
+            $lastId = $last->id + 1;
+        }
 
-        $last = Product::latest()->first();
-
-        for ($i = $last->id + 1; $i <= $last->id +$num; $i++) {
+        for ($i = $lastId; $i <= $lastId + $num; $i++) {
             DB::table('products')->insert([
-            'unit_id' => rand(1,5),
-            'category_id' => 7,
-            'slug'=> fake()->slug, 
-            'unit_number' => rand(1,50),
-            'price' => rand(10,230),
-            'special_price' => null,
-            'viewed' => 0,
-            'is_active' => 1,
-            'in_stock' => rand(1,100),
-            'thumbnail' => null,
-            'banner' => null,
-            'product_type' => 'general',
-            'created_at' => now()->format('Y-m-d H:i:s'),          
+                'unit_id' => rand(1, 5),
+                'category_id' => 7,
+                'slug' => fake()->slug,
+                'unit_number' => rand(1, 50),
+                'price' => rand(10, 230),
+                'special_price' => null,
+                'viewed' => 0,
+                'is_active' => 1,
+                'in_stock' => rand(1, 100),
+                'thumbnail' => null,
+                'banner' => null,
+                'product_type' => 'general',
+                'created_at' => now()->format('Y-m-d H:i:s'),
             ]);
 
             DB::table('product_translations')->insert([
