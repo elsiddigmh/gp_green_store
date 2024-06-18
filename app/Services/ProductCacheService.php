@@ -55,11 +55,6 @@ class ProductCacheService {
             return $cached_product;
         });
 
-//        "path": "http:\/\/127.0.0.1:8000\/api\/categories\/products\/baby-care",
-//        "per_page": 15,
-//        "to": 15,
-//        "total": 209
-
         // Construct pagination links
         $paginationLinks = [];
         $paginationLinks[] = [

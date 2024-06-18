@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
+use App\Services\CategoryCacheService;
 use App\Services\ProductCacheService;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Category;
@@ -16,18 +17,26 @@ class CategoryController extends Controller
 {
 
     private ProductCacheService $productCacheService;
+    private CategoryCacheService $categoryCacheService;
 
-    public function __construct(ProductCacheService $productCacheService)
+    public function __construct(ProductCacheService $productCacheService, CategoryCacheService $categoryCacheService)
     {
         $this->productCacheService = $productCacheService;
+        $this->categoryCacheService = $categoryCacheService;
     }
 
     public function index()
     {
-        $catregories = Category::with(['translation', 'child_categories'])
-            ->where('is_active', 1)
-            ->get();
-        return CategoryResource::collection($catregories);
+        $status = 1;
+        $categories = $this->categoryCacheService->getCachedCategoriesByStatus($status);
+        if ($categories->count() > 0) {
+            return CategoryResource::collection($categories);
+        } else {
+            $categories = Category::with(['translation', 'child_categories'])
+                ->where('is_active', $status)
+                ->get();
+        }
+        return CategoryResource::collection($categories);
     }
 
     public function show($slug)
