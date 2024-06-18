@@ -47,6 +47,7 @@ class CategoryController extends Controller
         $page = request()->get('page', 1); // Get the current page or default to 1
         $perPage = 15;
         $total = $filteredProducts->count();
+        // print_r($total);
         $results = $filteredProducts->slice(($page - 1) * $perPage, $perPage)->all();
 
         $paginatedProducts = new LengthAwarePaginator($results, $total, $perPage, $page, [
@@ -72,7 +73,15 @@ class CategoryController extends Controller
         });
 
         //Return the paginated ProductResource collection
-        return ProductResource::collection($cached_products);
+        return ProductResource::collection($cached_products)->additional([
+        
+                'total' => $paginatedProducts->total(),
+                'per_page' => $paginatedProducts->perPage(),
+                'current_page' => $paginatedProducts->currentPage(),
+                'last_page' => $paginatedProducts->lastPage(),
+                'from' => $paginatedProducts->firstItem(),
+                'to' => $paginatedProducts->lastItem(),
+        ]);
 
 
 

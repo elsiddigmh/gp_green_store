@@ -61,7 +61,7 @@ class SeedController extends Controller
         for ($i = $last->id + 1; $i <= $last->id +$num; $i++) {
             DB::table('products')->insert([
             'unit_id' => rand(1,5),
-            'category_id' => 11,
+            'category_id' => 7,
             'slug'=> fake()->slug, 
             'unit_number' => rand(1,50),
             'price' => rand(10,230),
