@@ -26,3 +26,7 @@ INSERT INTO `category_translations` (`id`, `category_id`, `locale`, `name`, `des
 (9, 13, 'English', 'Health Care', '', '2021-05-27 09:05:54', '2021-05-27 09:05:54'),
 (10, 14, 'English', 'Office Products', '', '2021-05-27 10:25:11', '2021-05-27 10:25:11'),
 (11, 15, 'English', 'Kitchen Appliances', '', '2021-05-27 10:27:09', '2021-05-27 10:27:09');
+
+
+INSERT INTO `users` (`id`, `name`, `email`, `phone`, `user_type`, `role_id`, `status`, `profile_picture`, `email_verified_at`, `password`, `provider`, `provider_id`, `address`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Jhon Doe', 'admin@demo.com', NULL, 'admin', NULL, 1, 'default.png', '2024-06-18 10:03:41', '$2y$10$5StiF1PVVlJIAk681lH9luGVTkJu1DH18VdHmSi/msAaWcMXrtYNC', NULL, NULL, NULL, NULL, '2024-06-18 10:03:41', '2024-06-18 10:03:41');

@@ -702,6 +702,7 @@ class ComposerStaticInitb536befd1bd789afb873a293eeb22755
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\ReportController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReportController.php',
         'App\\Http\\Controllers\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/RoleController.php',
+        'App\\Http\\Controllers\\SeedController' => __DIR__ . '/../..' . '/app/Http/Controllers/SeedController.php',
         'App\\Http\\Controllers\\Select2Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Select2Controller.php',
         'App\\Http\\Controllers\\TransactionController' => __DIR__ . '/../..' . '/app/Http/Controllers/TransactionController.php',
         'App\\Http\\Controllers\\UnitController' => __DIR__ . '/../..' . '/app/Http/Controllers/UnitController.php',

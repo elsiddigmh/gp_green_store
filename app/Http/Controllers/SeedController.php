@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -55,10 +56,12 @@ class SeedController extends Controller
 
     public function seedProduct($num){
 
-        for ($i = 1; $i <= $num; $i++) {
+        $last = Product::latest()->first();
+
+        for ($i = $last->id + 1; $i <= $last->id +$num; $i++) {
             DB::table('products')->insert([
             'unit_id' => rand(1,5),
-            'category_id' => rand (4,9),
+            'category_id' => 11,
             'slug'=> fake()->slug, 
             'unit_number' => rand(1,50),
             'price' => rand(10,230),
@@ -71,16 +74,13 @@ class SeedController extends Controller
             'product_type' => 'general',
             'created_at' => now()->format('Y-m-d H:i:s'),          
             ]);
-        }
 
-        for ($i = 1; $i <= $num; $i++) {
             DB::table('product_translations')->insert([
                 'product_id' => $i,
                 'name' => fake()->text,
                 'description' => fake()->paragraph(),
             ]);
         }
-
         return redirect('/')->with('success', _lang('Products Added Successfully'));
 
     }

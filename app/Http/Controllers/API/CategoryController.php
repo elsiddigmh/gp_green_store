@@ -71,7 +71,7 @@ class CategoryController extends Controller
             return $cached_product;
         });
 
-        // Return the paginated ProductResource collection
+        //Return the paginated ProductResource collection
         return ProductResource::collection($cached_products);
 
 
@@ -106,7 +106,7 @@ class CategoryController extends Controller
         //     ->orderBy('slug')
         //     ->paginate(15);
 
-        // return ProductResource::collection($cached_products);
+        // return ProductResource::collection($products);
 
 
     }
