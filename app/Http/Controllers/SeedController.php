@@ -31,7 +31,6 @@ class SeedController extends Controller
     public function seedCategory($num)
     {
         for ($i = 1; $i <= $num; $i++) {
-
             DB::table("categories")->insert([
                 "slug" => fake()->slug,
                 'icon' => '<i class="icofont-category"></i>',
@@ -40,9 +39,7 @@ class SeedController extends Controller
                 'parent_id' => null,
                 'is_active' => 1,
             ]);
-
         }
-
         for ($i = 1; $i <= $num; $i++) {
             DB::table("category_translations")->insert([
                 "category_id" => $i,
@@ -50,13 +47,11 @@ class SeedController extends Controller
                 "description" => fake()->sentence(),
             ]);
         }
-
         return redirect('/')->with('success', _lang('Categories Added Successfully'));
-
     }
 
 
-    public function seedProduct($num)
+    public function seedProduct($num,$type,$category_id)
     {
         $last = DB::table('products') ->latest() ->first();
         $lastId = 1;
@@ -67,7 +62,7 @@ class SeedController extends Controller
         for ($i = $lastId; $i <= $lastId + $num; $i++) {
             DB::table('products')->insert([
                 'unit_id' => rand(1, 5),
-                'category_id' => 7,
+                'category_id' => $category_id,
                 'slug' => fake()->slug,
                 'unit_number' => rand(1, 50),
                 'price' => rand(10, 230),
@@ -77,7 +72,7 @@ class SeedController extends Controller
                 'in_stock' => rand(1, 100),
                 'thumbnail' => null,
                 'banner' => null,
-                'product_type' => 'general',
+                'product_type' => $type,
                 'created_at' => now()->format('Y-m-d H:i:s'),
             ]);
 
