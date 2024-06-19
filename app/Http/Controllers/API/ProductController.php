@@ -23,16 +23,11 @@ class ProductController extends Controller
         if ($keyword == '') {
             return ProductResource::collection([]);
         }
-
-        $products = Product::where('is_active', 1)
-            ->whereHas('translation', function (Builder $query) use ($keyword) {
-                $query->where('name', 'like', '%' . $keyword . '%');
-            })
-            ->orderBy('slug')
-            ->limit(15)
-            ->get();
-
-        return ProductResource::collection($products);
+        $products = $this->productCacheService->getCachedProductsByProductName($keyword);
+        if ($products->count() > 0) {
+            return ProductResource::collection($products);
+        }
+        return $this->readFromPrimaryDatabase($keyword);
     }
 
     public function offers()
@@ -51,6 +46,18 @@ class ProductController extends Controller
             ->where('product_type', $type)
             ->orderBy('slug')
             ->paginate(15);
+        return ProductResource::collection($products);
+    }
+
+    public function readFromPrimaryDatabase($keyword)
+    {
+        $products = Product::where('is_active', 1)
+            ->whereHas('translations', function (Builder $query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            })
+            ->orderBy('slug')
+            ->limit(15)
+            ->get();
         return ProductResource::collection($products);
     }
 

@@ -51,9 +51,10 @@ class SeedController extends Controller
     }
 
 
-    public function seedProduct($num,$type,$category_id)
+    public function seedProduct($num, $type, $category_id)
     {
-        $last = DB::table('products') ->latest() ->first();
+        $last = DB::table('products')->latest('id')->first();
+//        dd($last);
         $lastId = 1;
         if ($last) {
             $lastId = $last->id + 1;
@@ -64,23 +65,26 @@ class SeedController extends Controller
                 'unit_id' => rand(1, 5),
                 'category_id' => $category_id,
                 'slug' => fake()->slug,
-                'unit_number' => rand(1, 50),
+                'unit_number' => rand(1, 999),
                 'price' => rand(10, 230),
-                'special_price' => null,
-                'viewed' => 0,
+                'special_price' => 99.9,
+                'viewed' => 50,
                 'is_active' => 1,
                 'in_stock' => rand(1, 100),
-                'thumbnail' => null,
-                'banner' => null,
+                'thumbnail' => '325253_2200-732x549.avif',
+                'banner' => 'aardbei-621x420.webp',
                 'product_type' => $type,
                 'created_at' => now()->format('Y-m-d H:i:s'),
+                'updated_at' => now()->format('Y-m-d H:i:s'),
             ]);
-
             DB::table('product_translations')->insert([
                 'product_id' => $i,
                 'name' => fake()->text,
                 'description' => fake()->paragraph(),
+                'created_at' => now()->format('Y-m-d H:i:s'),
+                'updated_at' => now()->format('Y-m-d H:i:s'),
             ]);
+
         }
         return redirect('/')->with('success', _lang('Products Added Successfully'));
 

@@ -7,22 +7,24 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
-class ProductCacheService {
+class ProductCacheService
+{
 
     public function getCachedProductsByCatgorySlugAndProductType($slug, $type)
     {
         $cachedProducts = $this->getCachedProductAsJsonArray();
         $cachedProductsArray = collect($cachedProducts);
-        return $this->filterCachedProductsByCategorySlug($slug,$cachedProductsArray,$type);
+        return $this->filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type);
     }
 
-    private function filterCachedProductsByCategorySlug($slug, $cachedProductsArray,$type)
+    private function filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type)
     {
         // Example category data for slug checking (this should come from your cache or a predefined array)
         $categories = $this->getCachedCategoriesAsJsonArray();
         // Filter products
-        $filteredProducts = $this->filterProducts($cachedProductsArray, $categories, $slug, $type);
+        $filteredProducts = $this->filterProductsByTypeAndSlug($cachedProductsArray, $categories, $slug, $type);
 
         // print_r($filteredProducts);
 
@@ -40,19 +42,7 @@ class ProductCacheService {
 
         // Convert to Product models
         $cached_products = collect($paginatedProducts->items())->map(function ($product) {
-            $cached_product = new Product();
-
-            $cached_product->id = $product['id'];
-            $cached_product->category_id = $product['category_id'];
-            $cached_product->unit_id = $product['unit_id'];
-            $cached_product->unit_number = $product['unit_number'];
-            $cached_product->price = $product['price'];
-            $cached_product->special_price = $product['special_price'];
-            $cached_product->in_stock = $product['in_stock'];
-            $cached_product->is_active = $product['is_active'];
-            $cached_product->thumbnail = $product['thumbnail'];
-
-            return $cached_product;
+            return $this->mapProductItem($product);
         });
 
         // Construct pagination links
@@ -96,9 +86,9 @@ class ProductCacheService {
         ]);
     }
 
-    private function filterProducts($cachedProductsArray, $categories, $slug,$type)
+    private function filterProductsByTypeAndSlug($cachedProductsArray, $categories, $slug, $type)
     {
-        return $cachedProductsArray->filter(function ($product) use ($slug, $categories,$type) {  // Check if the product's category slug matches
+        return $cachedProductsArray->filter(function ($product) use ($slug, $categories, $type) {  // Check if the product's category slug matches
             $category = collect($categories)->firstWhere('id', $product['category_id']);
             if ($slug && (!$category || $category['slug'] != $slug)) {
                 return false;
@@ -119,12 +109,58 @@ class ProductCacheService {
 
     private function getCachedProductAsJsonArray()
     {
-       return json_decode(Cache::get('products'), true);
+        return json_decode(Cache::get('products'), true);
     }
 
     private function getCachedCategoriesAsJsonArray()
     {
-       return json_decode(Cache::get('categories'), true);
+        return json_decode(Cache::get('categories'), true);
+    }
+
+    public function getCachedProductsByProductName($keyword)
+    {
+        $cachedProducts = $this->getCachedProductAsJsonArray();
+        $cachedProductsArray = collect($cachedProducts);
+        $filterCachedProductsByName = $this->filterCachedProductsByName($cachedProductsArray, $keyword);
+        // Convert to Product models
+        return collect($filterCachedProductsByName)->map(function ($product) {
+            return $this->mapProductItem($product);
+        });
+    }
+
+    private function filterCachedProductsByName($cachedProductsArray, $keyword)
+    {
+        return $cachedProductsArray->filter(function ($product) use ($keyword) {  // Check if the product's category slug matches
+            if ($product['is_active'] != 1) {
+                return false;
+            }
+            $product_translations = collect($product['translations']);
+            if ($product_translations->count() > 0 && $product_translations[0]) {
+//                print_r($product_translations);
+                if (!Str::contains($product_translations[0]['name'], $keyword,true)) {
+                    return false;
+                }
+            }
+            return true;
+        })->sortBy('slug')
+            ->values(); // Re-index the collection
+    }
+
+    function mapProductItem($product): Product
+    {
+        $cached_product = new Product();
+
+        $cached_product->id = $product['id'];
+        $cached_product->category_id = $product['category_id'];
+        $cached_product->unit_id = $product['unit_id'];
+        $cached_product->unit_number = $product['unit_number'];
+        $cached_product->price = $product['price'];
+        $cached_product->special_price = $product['special_price'];
+        $cached_product->in_stock = $product['in_stock'];
+        $cached_product->is_active = $product['is_active'];
+        $cached_product->thumbnail = $product['thumbnail'];
+
+        return $cached_product;
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
@@ -15,22 +16,9 @@ class ManageCacheController extends Controller
     }
     // Add All Products Records to Redis Cache
     public function addProductCache(){
-        $products = Product::all();
-        Cache::put('products', $products->toJson());
+        $products = Product::with('translations')->get();
+        Cache::put('products',$products->toJson());
         return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
-
-        // $cached_products = [];
-        // if(isset($products) && !empty($products)){
-        //     foreach($products as $product){
-        //         $row = Cache::put('product_id_'.$product->id, $product->toJson());
-        //         array_push($cached_products, $row);
-        //     }
-
-        //     dd($cached_products);
-        //     return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
-        // }else{
-        //     return redirect()->route('cache.index')->with('error', _lang('Something went wrong'));
-        // }
     }
     
     // Delete All Products Records Cached in Redis
