@@ -96,8 +96,9 @@ class CategoryController extends Controller {
         $category->is_active = $request->input('is_active');
 
         $category->save();
+        $allCategories = Category::all()->toJson();
 
-        Cache::put('category_'.$category->slug, $category->toJson());
+        Cache::put('categories',$allCategories);
 
         if (!$request->ajax()) {
             return redirect()->route('categories.create')->with('success', _lang('Saved Successfully'));

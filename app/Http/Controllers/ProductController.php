@@ -144,8 +144,8 @@ class ProductController extends Controller {
         $product->thumbnail     = $thumbnail;
 
         $product->save();
-
-        Cache::put('product_id_'.$product->id, $product->toJson());
+        $products = Product::all()->toJson();
+        Cache::put('products',$products);
 
         if (!$request->ajax()) {
             return redirect()->route('products.create')->with('success', _lang('Saved Successfully'));
