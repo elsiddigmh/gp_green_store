@@ -16,7 +16,7 @@ class ManageCacheController extends Controller
 
     private ProductCacheService $productCacheService;
     private CategoryCacheService $categoryCacheService;
-    public function __construct(ProductCacheService $productCacheService, $categoryCacheService){
+    public function __construct(ProductCacheService $productCacheService,CategoryCacheService $categoryCacheService){
         $this->productCacheService = $productCacheService;
         $this->categoryCacheService =  $categoryCacheService;
     }
