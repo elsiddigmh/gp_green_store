@@ -35,8 +35,8 @@ class CategoryController extends Controller
             $categories = Category::with(['translation', 'child_categories'])
                 ->where('is_active', $status)
                 ->get();
+            return CategoryResource::collection($categories);
         }
-        return CategoryResource::collection($categories);
     }
 
     public function show($slug)
