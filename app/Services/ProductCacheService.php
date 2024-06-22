@@ -4,15 +4,14 @@ namespace App\Services;
 
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use function MongoDB\BSON\toJSON;
 
 class ProductCacheService
 {
 
+    public static $AppCache = [];
     public function getCachedProductsByCatgorySlugAndProductType($slug, $type)
     {
         $cachedProducts = $this->getCachedProductAsJsonArray();
@@ -176,6 +175,21 @@ class ProductCacheService
     {
         Cache::forget('products');
     }
+    public function cacheCategories($categories)
+    {
+       self::$AppCache['categories'] = $categories;
+    }
+
+    public function cacheProducts($products)
+    {
+       self::$AppCache['products'] = $products;
+    }
+
+    public function getCachedProducts()
+    {
+       return self::$AppCache['products'];
+    }
+
 
 
 }
