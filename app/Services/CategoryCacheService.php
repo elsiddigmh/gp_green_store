@@ -47,4 +47,16 @@ class CategoryCacheService {
        return json_decode(Cache::get('categories'), true);
     }
 
+    public function reCacheCateories()
+    {
+        $this->clear();
+        $categories = Category::all();
+        Cache::put('categories', $categories->toJson());
+    }
+
+    public function clear()
+    {
+        Cache::forget('categories');
+    }
+
 }

@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get("/fill-unit", 'seedController@seedUnit');
-Route::get("/fill-category/{num}", 'seedController@seedCategory');
-Route::get("/fill-product/{num}/{type}/{category_id}", 'seedController@seedProduct');
+//Route::get("/fill-unit", 'seedController@seedUnit');
+//Route::get("/fill-category/{num}", 'seedController@seedCategory');
+//Route::get("/fill-product/{num}/{type}/{category_id}", 'seedController@seedProduct');
 
 
 Route::group(['middleware' => ['install']], function () {

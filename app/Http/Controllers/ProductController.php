@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\ProductCacheService;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -16,7 +17,9 @@ class ProductController extends Controller {
      *
      * @return void
      */
-    public function __construct() {
+    private ProductCacheService $productCacheService;
+    public function __construct(ProductCacheService $productCacheService) {
+        $this->productCacheService = $productCacheService;
         date_default_timezone_set(get_option('timezone', 'Asia/Dhaka'));
     }
 
@@ -144,8 +147,7 @@ class ProductController extends Controller {
         $product->thumbnail     = $thumbnail;
 
         $product->save();
-        $products = Product::all()->toJson();
-        Cache::put('products',$products);
+        $this->productCacheService->reCacheProducts();
 
         if (!$request->ajax()) {
             return redirect()->route('products.create')->with('success', _lang('Saved Successfully'));
@@ -243,8 +245,7 @@ class ProductController extends Controller {
         }
 
         $product->save();
-
-        Cache::put('product_id_'.$product->id, $product->toJson());
+        $this->productCacheService->reCacheProducts();
 
         if (!$request->ajax()) {
             return redirect()->route('products.index')->with('success', _lang('Updated Successfully'));
@@ -263,6 +264,7 @@ class ProductController extends Controller {
     public function destroy($id) {
         $product = Product::find($id);
         $product->delete();
+        $this->productCacheService->reCacheProducts();
         return redirect()->route('products.index')->with('success', _lang('Deleted Successfully'));
     }
 

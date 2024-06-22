@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Services\CategoryCacheService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Image;
@@ -15,8 +16,11 @@ class CategoryController extends Controller {
      *
      * @return void
      */
-    public function __construct() {
+
+    private CategoryCacheService $categoryCacheService;
+    public function __construct(CategoryCacheService $categoryCacheService) {
         date_default_timezone_set(get_option('timezone', 'Asia/Dhaka'));
+        $this->categoryCacheService =  $categoryCacheService;
     }
 
     /**
@@ -96,9 +100,7 @@ class CategoryController extends Controller {
         $category->is_active = $request->input('is_active');
 
         $category->save();
-        $allCategories = Category::all()->toJson();
-
-        Cache::put('categories',$allCategories);
+        $this->categoryCacheService->reCacheCateories();
 
         if (!$request->ajax()) {
             return redirect()->route('categories.create')->with('success', _lang('Saved Successfully'));
@@ -194,7 +196,7 @@ class CategoryController extends Controller {
         $category->is_active = $request->input('is_active');
 
         $category->save();
-        Cache::put('category_'.$category->slug, $category->toJson());
+        $this->categoryCacheService->reCacheCateories();
 
         if (!$request->ajax()) {
             return redirect()->route('categories.index')->with('success', _lang('Updated Successfully'));
@@ -213,6 +215,7 @@ class CategoryController extends Controller {
     public function destroy($id) {
         $category = Category::find($id);
         $category->delete();
+        $this->categoryCacheService->reCacheCateories();
         return redirect()->route('categories.index')->with('success', _lang('Deleted Successfully'));
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\CategoryCacheService;
+use App\Services\ProductCacheService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -11,53 +13,40 @@ use Illuminate\Support\Facades\Redis;
 
 class ManageCacheController extends Controller
 {
+
+    private ProductCacheService $productCacheService;
+    private CategoryCacheService $categoryCacheService;
+    public function __construct(ProductCacheService $productCacheService, $categoryCacheService){
+        $this->productCacheService = $productCacheService;
+        $this->categoryCacheService =  $categoryCacheService;
+    }
+
     public function index(){
         return view("backend.administration.manage_cache.index");
     }
     // Add All Products Records to Redis Cache
     public function addProductCache(){
-        $products = Product::with('translations')->get();
-        Cache::put('products',$products->toJson());
+        $this->productCacheService->reCacheProducts();
         return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
     }
     
     // Delete All Products Records Cached in Redis
     public function clearProductCache(Request $request){
-        $products = Product::all();
-        foreach($products as $product){
-            if(Cache::get('product_id_'.$product->id) != null){
-                Cache::forget('product_id_'.$product->id);
-            }
-        }
+        $this->productCacheService->clear();
         return redirect()->route('cache.index')->with('success', _lang('Products Caching has been Cleard!'));
     }
 
 
     // Add All Categories Records to Redis Cache
     public function addCategoryCache(){
-        $categories = Category::all();
-        Cache::put('categories', $categories->toJson());
-        //dd($categories);
-    
-        if(isset($categories) && !empty($categories)){
-            foreach($categories as $category){
-                Cache::put('category_'.$category->slug, $category->toJson());
-            }
-            return redirect()->route('cache.index')->with('success', _lang('All Categories Records Cached Successfully'));
-        }else{
-            return redirect()->route('cache.index')->with('error', _lang('Something went wrong'));
-        }
+        $this->categoryCacheService->reCacheCateories();
+        return redirect()->route('cache.index')->with('success', _lang('All Categories Records Cached Successfully'));
     }
 
 
     // Delete All Categories Records Cached in Redis
     public function clearCategoryCache(Request $request){
-        $categories = Category::all();
-        foreach($categories as $category){
-            if(Cache::get('category_'.$category->slug) != null){
-                Cache::forget('category_'.$category->slug);
-            }
-        }
+        $this->categoryCacheService->clear();
         return redirect()->route('cache.index')->with('success', _lang('Categories Caching has been Cleard!'));
     }
 

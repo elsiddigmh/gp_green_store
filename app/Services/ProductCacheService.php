@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use function MongoDB\BSON\toJSON;
 
 class ProductCacheService
 {
@@ -159,8 +160,22 @@ class ProductCacheService
         $cached_product->in_stock = $product['in_stock'];
         $cached_product->is_active = $product['is_active'];
         $cached_product->thumbnail = $product['thumbnail'];
+        $cached_product->slug = $product['slug'];
 
         return $cached_product;
     }
+
+    public function reCacheProducts()
+    {
+        $this->clear();
+        $products = Product::with('translations')->get();
+        Cache::put('products',$products->toJson());
+    }
+
+    public function clear()
+    {
+        Cache::forget('products');
+    }
+
 
 }
