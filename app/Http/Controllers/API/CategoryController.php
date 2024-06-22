@@ -29,7 +29,7 @@ class CategoryController extends Controller
     {
         $status = 1;
         $categories = $this->categoryCacheService->getCachedCategoriesByStatus($status);
-        if ($categories->count() > 0) {
+        if (count($categories) > 0) {
             return CategoryResource::collection($categories);
         } else {
             $categories = Category::with(['translation', 'child_categories'])
@@ -53,10 +53,10 @@ class CategoryController extends Controller
             Log::info('Reading Products from the cache for category ' . $slug);
             return $cachedProductsArray;
         }
-        return $this->readFromPrimaryDatabse($slug, $type);
+        return $this->readFromPrimaryDatabase($slug, $type);
     }
 
-    public function readFromPrimaryDatabse($slug, $type)
+    public function readFromPrimaryDatabase($slug, $type)
     {
         $products = Product::where('is_active', 1)
             ->where('product_type', $type)

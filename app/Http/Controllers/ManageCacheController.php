@@ -53,6 +53,8 @@ class ManageCacheController extends Controller
     // Clear All Records Cached in Redis
     public function clearCache(Request $request){
         Cache::flush();
+        $this->categoryCacheService->clear();
+        $this->productCacheService->clear();
         return redirect()->route('cache.index')->with('success', _lang('Application Caching has been Cleard!'));
     }
 

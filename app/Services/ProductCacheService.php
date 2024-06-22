@@ -6,15 +6,21 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ProductCacheService
 {
 
-    public static $AppCache = [];
+    private CategoryCacheService  $categoryCacheService;
+
+    public function __construct(CategoryCacheService $categoryCacheService) {
+        $this->categoryCacheService = $categoryCacheService;
+    }
+
     public function getCachedProductsByCatgorySlugAndProductType($slug, $type)
     {
-        $cachedProducts = $this->getCachedProductAsJsonArray();
+        $cachedProducts = $this->getCachedProducts();
         $cachedProductsArray = collect($cachedProducts);
         return $this->filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type);
     }
@@ -22,7 +28,7 @@ class ProductCacheService
     private function filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type)
     {
         // Example category data for slug checking (this should come from your cache or a predefined array)
-        $categories = $this->getCachedCategoriesAsJsonArray();
+        $categories = $this->categoryCacheService->getCachedCategories();
         // Filter products
         $filteredProducts = $this->filterProductsByTypeAndSlug($cachedProductsArray, $categories, $slug, $type);
 
@@ -41,9 +47,7 @@ class ProductCacheService
         ]);
 
         // Convert to Product models
-        $cached_products = collect($paginatedProducts->items())->map(function ($product) {
-            return $this->mapProductItem($product);
-        });
+        $cached_products = collect($paginatedProducts->items());
 
         // Construct pagination links
         $paginationLinks = [];
@@ -107,25 +111,13 @@ class ProductCacheService
             ->values(); // Re-index the collection
     }
 
-    private function getCachedProductAsJsonArray()
-    {
-        return json_decode(Cache::get('products'), true);
-    }
-
-    private function getCachedCategoriesAsJsonArray()
-    {
-        return json_decode(Cache::get('categories'), true);
-    }
-
     public function getCachedProductsByProductName($keyword)
     {
-        $cachedProducts = $this->getCachedProductAsJsonArray();
+        $cachedProducts = $this->getCachedProducts();
         $cachedProductsArray = collect($cachedProducts);
         $filterCachedProductsByName = $this->filterCachedProductsByName($cachedProductsArray, $keyword);
         // Convert to Product models
-        return collect($filterCachedProductsByName)->map(function ($product) {
-            return $this->mapProductItem($product);
-        });
+        return $filterCachedProductsByName;
     }
 
     private function filterCachedProductsByName($cachedProductsArray, $keyword)
@@ -168,26 +160,27 @@ class ProductCacheService
     {
         $this->clear();
         $products = Product::with('translations')->get();
-        Cache::put('products',$products->toJson());
+        $this->cacheProducts($products);
     }
 
     public function clear()
     {
-        Cache::forget('products');
-    }
-    public function cacheCategories($categories)
-    {
-       self::$AppCache['categories'] = $categories;
+        CacheService::$AppCache['products'] = [];
+        Log::info( 'Cached products cleared, new count = '. count(CacheService::$AppCache['products']));
     }
 
+    //TODO continue cache in array
     public function cacheProducts($products)
     {
-       self::$AppCache['products'] = $products;
+        CacheService::$AppCache['products'] = $products;
+        Log::info( 'Cached products with count = '. count(CacheService::$AppCache['products']));
     }
 
     public function getCachedProducts()
     {
-       return self::$AppCache['products'];
+        if (isset(CacheService::$AppCache['products']))
+            return CacheService::$AppCache['products'];
+        return CacheService::$AppCache['products'] = [];
     }
 
 

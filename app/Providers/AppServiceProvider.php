@@ -2,17 +2,17 @@
 
 namespace App\Providers;
 
+use App\Services\CategoryCacheService;
+use App\Services\ProductCacheService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
+    private CategoryCacheService $categoryCacheService;
+    private ProductCacheService $productCacheService;
+
     public function register()
     {
         Schema::defaultStringLength(191);
@@ -25,6 +25,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+//        $this->cacheAllData();
         Paginator::useBootstrap();
+    }
+
+    private function cacheAllData()
+    {
+        $this->categoryCacheService = new CategoryCacheService();
+        $this->productCacheService = new ProductCacheService($this->categoryCacheService);
+        $this->productCacheService->reCacheProducts();
+        $this->categoryCacheService->reCacheCateories();
     }
 }

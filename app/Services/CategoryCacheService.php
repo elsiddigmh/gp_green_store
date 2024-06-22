@@ -6,30 +6,17 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class CategoryCacheService {
 
     public function getCachedCategoriesByStatus($status)
     {
         // Example category data for status checking (this should come from your cache or a predefined array)
-        $cachedCategoriesArray = $this->getCachedCategoriesAsJsonArray();
+        return $this->getCachedCategoriesAsJsonArray();
         // Filter Categories and return
-        $cachedCategoriesArrayCollect = collect($cachedCategoriesArray);
-        return collect($this->filterCategories($cachedCategoriesArrayCollect, $status))->map(function ($cat) {
-            $category = new Category();
-
-            $category->id = $cat['id'];
-            $category->icon = $cat['icon'];
-            $category->image = $cat['image'];
-            $category->parent_id = $cat['parent_id'];
-            $category->slug = $cat['slug'];
-            $category->is_active = $cat['is_active'];
-            $category->banner = $cat['banner'];
-            $category->created_at = $cat['created_at'];
-            $category->updated_at = $cat['updated_at'];
-
-            return $category;
-        });
+//        $cachedCategoriesArrayCollect = collect($cachedCategoriesArray);
+//        return $this->filterCategories($cachedCategoriesArrayCollect, $status);
     }
     private function filterCategories($cachedCategoriesArray, $status)
     {
@@ -44,19 +31,33 @@ class CategoryCacheService {
 
     private function getCachedCategoriesAsJsonArray()
     {
-       return json_decode(Cache::get('categories'), true);
+       return $this->getCachedCategories();
     }
 
     public function reCacheCateories()
     {
         $this->clear();
         $categories = Category::all();
-        Cache::put('categories', $categories->toJson());
+        $this->cacheCategories($categories);
     }
 
     public function clear()
     {
-        Cache::forget('categories');
+        CacheService::$AppCache['categories'] = [];
+        Log::info( 'Cached categories cleared, new count = '. count(CacheService::$AppCache['categories']));
+    }
+
+    public function cacheCategories($categories)
+    {
+        CacheService::$AppCache['categories'] = $categories;
+        Log::info( 'Cached categories with count = '. count(CacheService::$AppCache['categories']));
+    }
+
+    public function getCachedCategories()
+    {
+        if (isset(CacheService::$AppCache['categories']))
+            return CacheService::$AppCache['categories'];
+        return CacheService::$AppCache['categories'] = [];
     }
 
 }
