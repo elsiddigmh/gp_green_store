@@ -27,16 +27,8 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $status = 1;
-        $categories = $this->categoryCacheService->getCachedCategoriesByStatus($status);
-        if (count($categories) > 0) {
-            return CategoryResource::collection($categories);
-        } else {
-            $categories = Category::with(['translation', 'child_categories'])
-                ->where('is_active', $status)
-                ->get();
-            return CategoryResource::collection($categories);
-        }
+        $categories = $this->categoryCacheService->getCachedCategories();
+        return CategoryResource::collection($categories);
     }
 
     public function show($slug)

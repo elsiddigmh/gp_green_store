@@ -23,7 +23,9 @@
         "symfony/mailgun-mailer": "^6.3",
         "symfony/postmark-mailer": "^6.3",
         "tymon/jwt-auth": "^2.0",
-        "yajra/laravel-datatables": "^10.0"
+        "yajra/laravel-datatables": "^10.0",
+        "ext-pdo": "*",
+        "ext-apcu": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",

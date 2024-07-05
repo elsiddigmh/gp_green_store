@@ -6,6 +6,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -92,17 +93,18 @@ class ProductCacheService
 
     private function filterProductsByTypeAndSlug($cachedProductsArray, $categories, $slug, $type)
     {
+//        echo json_encode($cachedProductsArray);
         return $cachedProductsArray->filter(function ($product) use ($slug, $categories, $type) {  // Check if the product's category slug matches
-            $category = collect($categories)->firstWhere('id', $product['category_id']);
-            if ($slug && (!$category || $category['slug'] != $slug)) {
+            $category = collect($categories)->firstWhere('id', $product->cat_id);
+            if ($slug && (!$category || $category->slug != $slug)) {
                 return false;
             }
             // Check if product is active
-            if ($product['is_active'] != 1) {
+            if ($product->is_active != 1) {
                 return false;
             }
             // Check if product type is 'general'
-            if ($product['product_type'] != $type) {
+            if ($product->product_type != $type) {
                 return false;
             }
             return true;
@@ -159,28 +161,43 @@ class ProductCacheService
     public function reCacheProducts()
     {
         $this->clear();
-        $products = Product::with('translations')->get();
-        $this->cacheProducts($products);
+        $this->cacheProducts();
     }
 
     public function clear()
     {
-        CacheService::$AppCache['products'] = [];
-        Log::info( 'Cached products cleared, new count = '. count(CacheService::$AppCache['products']));
+        $response = Http::get(env('LOAD_BALANCER_BASE_URL') . '/api/clear_cache.php');
+        // Check if the response is successful
+        if ($response->successful()) {
+            return $response->body();
+        }
+        return response()->json(['error' => 'Unable to fetch categories'], $response->status());
     }
 
     //TODO continue cache in array
-    public function cacheProducts($products)
+    public function cacheProducts()
     {
-        CacheService::$AppCache['products'] = $products;
-        Log::info( 'Cached products with count = '. count(CacheService::$AppCache['products']));
+        $response = Http::get(env('LOAD_BALANCER_BASE_URL') . '/api/cache.php');
+        // Check if the response is successful
+        if ($response->successful()) {
+            return $response->body();
+        }
+        return response()->json(['error' => 'Unable to fetch categories'], $response->status());
     }
 
     public function getCachedProducts()
     {
-        if (isset(CacheService::$AppCache['products']))
-            return CacheService::$AppCache['products'];
-        return CacheService::$AppCache['products'] = [];
+        // Define the backend URL and make the request
+        $response = Http::get(env('LOAD_BALANCER_BASE_URL') . '/api/products.php');
+        // Check if the response is successful
+        if ($response->successful()) {
+            $data = $response->json()['data'];
+            // Transform the data using the CategoryResource
+            return collect($data)->map(function ($item) {
+                return (object)$item;
+            });
+        }
+        return response()->json(['error' => 'Unable to fetch products'], $response->status());
     }
 
 

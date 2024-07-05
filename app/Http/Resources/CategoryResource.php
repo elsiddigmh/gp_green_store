@@ -19,8 +19,8 @@ class CategoryResource extends JsonResource {
             'icon'           => $this->icon,
             'image'          => '/uploads/media/' . $this->image,
             'banner'         => $this->banner != '' ? '/uploads/media/' . $this->banner : '',
-            'name'           => $this->translation->name,
-            'sub_categories' => CategoryResource::collection($this->child_categories),
+            'name'           => $this->name,
+            'sub_categories' => $this->sub_categories,
             'parent_id'      => $this->parent_id,
         ];
     }
