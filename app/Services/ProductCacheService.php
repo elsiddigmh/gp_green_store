@@ -23,7 +23,9 @@ class ProductCacheService
     {
         $cachedProducts = $this->getCachedProducts();
         $cachedProductsArray = collect($cachedProducts);
-        return $this->filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type);
+        $data = $this->filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type);
+//         print_r($data);
+        return $data;
     }
 
     private function filterCachedProductsByCategorySlug($slug, $cachedProductsArray, $type)
@@ -128,7 +130,7 @@ class ProductCacheService
             if ($product['is_active'] != 1) {
                 return false;
             }
-            $product_translations = collect($product['translations']);
+            $product_translations = collect($product['translation']);
             if ($product_translations->count() > 0 && $product_translations[0]) {
 //                print_r($product_translations);
                 if (!Str::contains($product_translations[0]['name'], $keyword,true)) {

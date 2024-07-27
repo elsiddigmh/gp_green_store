@@ -18,14 +18,14 @@ class ProductResource extends JsonResource {
             'slug'          => $this->slug,
             'thumbnail'     => '/uploads/media/' . $this->thumbnail,
             'banner'        => '/uploads/media/' . $this->banner,
-            'name'          => $this->translation->name,
-            'description'   => $this->translation->description,
+            'name'          => $this->name,
+            'description'   => $this->description,
             'price'         => $this->price,
             'special_price' => $this->special_price,
             'current_price' => $this->special_price > 0  ? $this->special_price : $this->price,
             '_price'        => $this->special_price > 0 ? '<del>'.decimalPlace($this->price, currency()) .'</del>  '.decimalPlace($this->special_price, currency()) : decimalPlace($this->price, currency()),
             'in_stock'      => $this->in_stock,
-            'unit'          => $this->unit_number . ' ' . $this->unit->translation->short_name,
+            'unit'          => $this->unit_number . ' '
         ];
     }
 }
