@@ -81,6 +81,7 @@ Route::group(['middleware' => ['install']], function () {
             Route::get('cache/category/clear', 'ManageCacheController@clearCategoryCache')->name('cache.categories.clear');
 
             Route::get('cache/clear', 'ManageCacheController@clearCache')->name('cache.clear');
+            Route::get('cache/all', 'ManageCacheController@cacheAll')->name('cache.all');
 
         });
 

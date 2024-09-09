@@ -101,7 +101,6 @@
         :key="product.id"
         :style="{ width: offerItemWidth + 'px' }"
       >
-        <img :src="product.banner" class="offer-banner m-auto" />
         <div class="text-center">
           <img :src="product.thumbnail" class="offer-thumb" />
           <div class="p-2">

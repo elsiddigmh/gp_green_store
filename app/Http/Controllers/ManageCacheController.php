@@ -24,38 +24,62 @@ class ManageCacheController extends Controller
     public function index(){
         return view("backend.administration.manage_cache.index");
     }
-    // Add All Products Records to Redis Cache
+    
     public function addProductCache(){
+        $this->cacheProductsInAllNodes();
+        return redirect()->route('cache.index')->with('success', _lang('All products data cached successfully'));
+    }
+
+    private function cacheProductsInAllNodes(){
         $this->productCacheService->reCacheProducts();
-        return redirect()->route('cache.index')->with('success', _lang('All Products Records Cached Successfully'));
+        $this->productCacheService->reCacheProducts();
+        $this->productCacheService->reCacheProducts();
     }
     
-    // Delete All Products Records Cached in Redis
     public function clearProductCache(Request $request){
-        $this->productCacheService->clear();
-        return redirect()->route('cache.index')->with('success', _lang('Products Caching has been Cleard!'));
+        $this->clearProductsFromAllNodes();
+        return redirect()->route('cache.index')->with('success', _lang('Products cache has been cleard!'));
     }
 
-
-    // Add All Categories Records to Redis Cache
     public function addCategoryCache(){
+        $this->cacheCategoriesInAllNodes();
+        return redirect()->route('cache.index')->with('success', _lang('All categories data cached successfully'));
+    }
+
+    private function cacheCategoriesInAllNodes( ){
         $this->categoryCacheService->reCacheCateories();
-        return redirect()->route('cache.index')->with('success', _lang('All Categories Records Cached Successfully'));
+        $this->categoryCacheService->reCacheCateories();
+        $this->categoryCacheService->reCacheCateories();
     }
 
 
-    // Delete All Categories Records Cached in Redis
     public function clearCategoryCache(Request $request){
-        $this->categoryCacheService->clear();
-        return redirect()->route('cache.index')->with('success', _lang('Categories Caching has been Cleard!'));
+        $this->clearCategoriesFromAllNodes();
+        return redirect()->route('cache.index')->with('success', _lang('Categories cache has been cleard!'));
     }
 
-    // Clear All Records Cached in Redis
+    public function cacheAll(Request $request){
+        $this->cacheCategoriesInAllNodes();
+        $this->cacheProductsInAllNodes();
+        return redirect()->route('cache.index')->with('success', _lang('All application data has been cached successfully!'));
+    }
+
     public function clearCache(Request $request){
-        Cache::flush();
+        $this->clearCategoriesFromAllNodes();
+        $this->clearProductsFromAllNodes();
+        return redirect()->route('cache.index')->with('success', _lang('All application caches has been cleard!'));
+    }
+
+    private function clearCategoriesFromAllNodes(){
         $this->categoryCacheService->clear();
+        $this->categoryCacheService->clear();
+        $this->categoryCacheService->clear();
+    }
+
+    private function clearProductsFromAllNodes(){
         $this->productCacheService->clear();
-        return redirect()->route('cache.index')->with('success', _lang('Application Caching has been Cleard!'));
+        $this->productCacheService->clear();
+        $this->productCacheService->clear();
     }
 
 
