@@ -154,7 +154,7 @@ class ProductCacheService
         $cached_product->thumbnail = $product['thumbnail'];
         $cached_product->slug = $product['slug'];
         $cached_product->name = $product['name'];
-
+        $cached_product->name = $product['description'];
 
         return $cached_product;
     }

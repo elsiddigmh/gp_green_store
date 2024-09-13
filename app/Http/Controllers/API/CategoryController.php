@@ -41,6 +41,7 @@ class CategoryController extends Controller
     {
         $type = 'general';
         $cachedProductsArray = $this->productCacheService->getCachedProductsByCatgorySlugAndProductType($slug, $type);
+        // print_r($cachedProductsArray);
         if ($cachedProductsArray->count() > 0) {
             Log::info('Reading Products from the cache for category ' . $slug);
             return $cachedProductsArray;
@@ -49,13 +50,13 @@ class CategoryController extends Controller
     }
 
     public function readFromPrimaryDatabase($slug, $type)
-    {
-        $products = Product::where('is_active', 1)
+    {    
+        $products = Product::join('product_translations','products.id','=','product_translations.product_id')
+        ->select('products.*', 'product_translations.*')
             ->where('product_type', $type)
             ->whereHas('category', function (Builder $query) use ($slug) {
                 $query->where('slug', $slug);
-            })
-            ->orderBy('slug')
+            })->orderBy('slug')
             ->paginate(15);
         return ProductResource::collection($products);
     }
