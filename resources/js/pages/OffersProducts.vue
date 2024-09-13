@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="banner">
-      <img class="page-banner" :src="bannerImage"/>
+      
       <h2 class="page-title">{{ $lang["Special Offers"] }}</h2>
     </section>
 
