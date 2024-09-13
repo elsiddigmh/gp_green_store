@@ -882,7 +882,8 @@ input:checked + .slider:before {
 }
 
 .popular-items .single-item img {
-  max-height: 260px;
+  max-height: 220px;
+  min-height: 220px;
   border-radius: 4px;
   width: 100%;
 }

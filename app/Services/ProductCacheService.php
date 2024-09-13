@@ -127,16 +127,13 @@ class ProductCacheService
     private function filterCachedProductsByName($cachedProductsArray, $keyword)
     {
         return $cachedProductsArray->filter(function ($product) use ($keyword) {  // Check if the product's category slug matches
-            if ($product['is_active'] != 1) {
+            if ($product->is_active != 1) {
                 return false;
             }
-            $product_translations = collect($product['translation']);
-            if ($product_translations->count() > 0 && $product_translations[0]) {
-//                print_r($product_translations);
-                if (!Str::contains($product_translations[0]['name'], $keyword,true)) {
+                if (!Str::contains($product->name, $keyword,true)) {
                     return false;
                 }
-            }
+            
             return true;
         })->sortBy('slug')
             ->values(); // Re-index the collection
@@ -156,6 +153,8 @@ class ProductCacheService
         $cached_product->is_active = $product['is_active'];
         $cached_product->thumbnail = $product['thumbnail'];
         $cached_product->slug = $product['slug'];
+        $cached_product->name = $product['name'];
+
 
         return $cached_product;
     }
